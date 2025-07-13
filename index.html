@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>plateau-kouchi-building-2023</title>
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0" />
+    <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@1.15.2/dist/maplibre-gl.css" />
+    <script src="https://unpkg.com/maplibre-gl@1.15.2/dist/maplibre-gl.js"></script>
+  </head>
+  <body>
+    <div id="map" style="position: absolute; top: 0; left: 0; bottom: 0; right: 0"></div>
+    <script>
+      const style = {
+        version: 8,
+        sources: {
+          seamlessphoto: {
+            type: "raster",
+            tiles: ["https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg"],
+            tileSize: 256,
+            minzoom: 0,
+            maxzoom: 18,
+            attribution: '<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank">国土地理院</a>',
+          },
+          plateau: {
+            type: "vector",
+            tiles: ["https://mikazuki-main.github.io/plateau-kouchi-building-mvt-2023/{z}/{x}/{y}.pbf"],
+            minzoom: 10,
+            maxzoom: 16,
+            attribution: "<a href='https://www.mlit.go.jp/plateau/' target='_blank'>国土交通省 Project PLATEAU</a>（高知市 2023年度）を加工して作成",
+          },
+        },
+        layers: [
+          {
+            id: "basemap",
+            type: "raster",
+            source: "seamlessphoto",
+          },
+          {
+            id: "bldg",
+            type: "fill-extrusion",
+            source: "plateau",
+            "source-layer": "bldg:Building",
+            minzoom: 13,
+            paint: {
+              "fill-extrusion-color": "rgb(200, 200, 200)",
+              "fill-extrusion-height": ["get", "measuredHeight"],
+              "fill-extrusion-opacity": 0.9,
+            },
+          },
+        ],
+      };
+
+      new maplibregl.Map({
+        container: "map",
+        style: style,
+        center: [133.5461, 33.5597],
+        zoom: 16,
+        pitch: 60,
+        hash: true,
+      });
+    </script>
+  </body>
+</html>
